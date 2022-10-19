@@ -9,3 +9,4 @@ edition = "2021"
 actix-web = "4"
 serde = { version = "1.0.145", features = ["derive"] }
 futures = "0.3.24"
+wkhtmltopdf = "0.4.0"
