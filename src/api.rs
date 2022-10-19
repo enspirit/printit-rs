@@ -4,12 +4,12 @@ use actix_web::{dev::ServerHandle, post, App, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-struct PrintRequest {
+struct PrintRequestQuery {
     driver: String,
 }
 
 #[post("/print")]
-async fn print(mut body: web::Payload, query: web::Query<PrintRequest>) -> Result<HttpResponse, Error> {
+async fn print(mut body: web::Payload, query: web::Query<PrintRequestQuery>) -> Result<HttpResponse, Error> {
   let mut bytes = web::BytesMut::new();
     while let Some(item) = body.next().await {
         let item = item?;
