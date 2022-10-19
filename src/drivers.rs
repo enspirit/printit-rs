@@ -2,7 +2,7 @@ mod wk;
 mod weasyprint;
 
 pub trait HtmlToPdfWriter {
-  fn build(&self, html: &str);
+  fn html_to_pdf(&self, html: &str);
 }
 
 pub struct DriverFactory;

@@ -4,7 +4,7 @@ use super::HtmlToPdfWriter;
 pub struct WkHtmlToPdf;
 
 impl HtmlToPdfWriter for WkHtmlToPdf {
-  fn build(&self, _html: &str) {
+  fn html_to_pdf(&self, _html: &str) {
     println!("Building html with WK");
   }
 }
