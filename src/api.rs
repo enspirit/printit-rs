@@ -1,3 +1,6 @@
+use std::borrow::Borrow;
+
+use actix_web::web::Bytes;
 use actix_web::{post, App, HttpServer};
 use actix_web::{web, Error, HttpResponse};
 use futures::StreamExt;
@@ -12,20 +15,20 @@ struct PrintRequestQuery {
 
 #[post("/print")]
 async fn print(
-    mut body: web::Payload,
+    bytes: Bytes,
     query: web::Query<PrintRequestQuery>,
 ) -> Result<HttpResponse, Error> {
     let driver = drivers::DriverFactory::html_to_pdf(&query.driver[..]);
     match driver {
         None => Ok(HttpResponse::NotAcceptable().finish()),
-        Some(_driver) => {
-            let mut bytes = web::BytesMut::new();
-            while let Some(item) = body.next().await {
-                let item = item?;
-                println!("Chunk: {:?}", &item);
-                bytes.extend_from_slice(&item);
+        Some(driver) => {
+            match String::from_utf8(bytes.to_vec()) {
+                Ok(text) => {
+                    driver.html_to_pdf(&text[..]);
+                    Ok(HttpResponse::Ok().finish())
+                },
+                Err(_) => Ok(HttpResponse::BadRequest().finish())
             }
-            Ok(HttpResponse::Ok().finish())
         }
     }
 }
