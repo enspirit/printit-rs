@@ -14,7 +14,7 @@ pub struct WeasyPrint;
 
 impl HtmlToPdfWriter for WeasyPrint {
   fn build(&self, _html: &str) {
-    println!("Building html with WK");
+    println!("Building html with Weasyprint");
   }
 }
 
