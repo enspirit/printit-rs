@@ -1,5 +1,5 @@
-use actix_web::{dev::ServerHandle, post, App, HttpServer, Responder};
-use actix_web::{get, web, Error, HttpResponse};
+use actix_web::{post, App, HttpServer};
+use actix_web::{web, Error, HttpResponse};
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 
@@ -18,7 +18,7 @@ async fn print(
     let driver = drivers::DriverFactory::html_to_pdf(&query.driver[..]);
     match driver {
         None => Ok(HttpResponse::NotAcceptable().finish()),
-        Some(driver) => {
+        Some(_driver) => {
             let mut bytes = web::BytesMut::new();
             while let Some(item) = body.next().await {
                 let item = item?;

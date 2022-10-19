@@ -2,15 +2,10 @@ pub trait HtmlToPdfWriter {
   fn build(&self, html: &str);
 }
 
-enum HtmlToPdfWriterDrivers {
-  WkHtmlToPdf,
-  WeasyPrint
-}
-
 pub struct WkHtmlToPdf;
 
 impl HtmlToPdfWriter for WkHtmlToPdf {
-  fn build(&self, html: &str) {
+  fn build(&self, _html: &str) {
     println!("Building html with WK");
   }
 }
@@ -18,7 +13,7 @@ impl HtmlToPdfWriter for WkHtmlToPdf {
 pub struct WeasyPrint;
 
 impl HtmlToPdfWriter for WeasyPrint {
-  fn build(&self, html: &str) {
+  fn build(&self, _html: &str) {
     println!("Building html with WK");
   }
 }
