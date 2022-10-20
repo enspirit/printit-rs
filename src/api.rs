@@ -16,8 +16,9 @@ struct PrintRequestQuery {
 async fn print(
     bytes: Bytes,
     query: web::Query<PrintRequestQuery>,
+    factory: web::Data<drivers::DriverFactory>
 ) -> Result<HttpResponse, Error> {
-    let driver = drivers::DriverFactory::html_to_pdf(&query.driver[..]);
+    let driver = factory.html_to_pdf(&query.driver[..]);
     match driver {
         None => Ok(HttpResponse::NotAcceptable().finish()),
         Some(driver) => {
@@ -44,10 +45,15 @@ async fn print(
 }
 
 pub async fn start() -> std::io::Result<()> {
-    // start server as normal but don't .await after .run() yet
-    let srv = HttpServer::new(|| App::new().service(print))
+
+    let srv = HttpServer::new(move || {
+        let factory = web::Data::new(drivers::DriverFactory::new());
+        App::new()
+            .service(print)
+            .app_data(factory)
+    })
         .bind(("127.0.0.1", 8888))?
-        .workers(2)
+        .workers(1)
         .run();
 
     println!("Printit started on http://0.0.0.0:8888");
