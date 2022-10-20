@@ -1,5 +1,3 @@
-use std::io::Read;
-
 use wkhtmltopdf::*;
 use super::HtmlToPdfWriter;
 
