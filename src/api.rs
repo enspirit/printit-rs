@@ -1,3 +1,5 @@
+use std::io::{BufReader, Read};
+
 use actix_web::web::Bytes;
 use actix_web::{post, App, HttpServer};
 use actix_web::{web, Error, HttpResponse};
@@ -19,10 +21,21 @@ async fn print(
     match driver {
         None => Ok(HttpResponse::NotAcceptable().finish()),
         Some(driver) => {
+            println!("Driver found, reading body");
             match String::from_utf8(bytes.to_vec()) {
                 Ok(text) => {
-                    driver.html_to_pdf(&text[..]);
-                    Ok(HttpResponse::Ok().finish())
+                    println!("Body read! Converting to PDF");
+                    let pdf = driver.html_to_pdf(&text[..]);
+                    println!("Reading PDF into buffer");
+                    let mut buf_reader = BufReader::new(pdf.expect("unable to read pdf"));
+                    let mut tmp_vec: Vec<u8> = vec![];
+                    buf_reader.read_to_end(&mut tmp_vec)?;
+                    println!("Serving PDF");
+                    Ok(
+                        HttpResponse::Ok()
+                            .append_header(("Content-Type", "application/pdf"))
+                            .body(tmp_vec)
+                    )
                 },
                 Err(_) => Ok(HttpResponse::BadRequest().finish())
             }

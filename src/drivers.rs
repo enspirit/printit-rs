@@ -1,8 +1,9 @@
+use std::io::Read;
 mod wk;
 mod weasyprint;
 
 pub trait HtmlToPdfWriter {
-  fn html_to_pdf(&self, html: &str);
+  fn html_to_pdf(&self, html: &str) -> Result<Box<dyn Read>, std::io::Error>;
 }
 
 pub struct DriverFactory;
